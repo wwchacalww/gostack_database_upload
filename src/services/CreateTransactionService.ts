@@ -26,7 +26,7 @@ class CreateTransactionService {
     );
     console.log(checkBalance);
     if (!checkBalance) {
-      throw new AppError("You shouldn't expense more than you receive!");
+      throw new AppError("You shouldn't expense more than you receive!", 400);
     }
 
     let category_id: string;

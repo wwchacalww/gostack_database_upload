@@ -28,22 +28,18 @@ transactionsRouter.get('/', async (request, response) => {
 });
 
 transactionsRouter.post('/', async (request, response) => {
-  try {
-    const { title, type, value, category } = request.body;
+  const { title, type, value, category } = request.body;
 
-    const createTransaction = new CreateTransactionService();
+  const createTransaction = new CreateTransactionService();
 
-    const transaction = await createTransaction.execute({
-      title,
-      type,
-      value,
-      category,
-    });
+  const transaction = await createTransaction.execute({
+    title,
+    type,
+    value,
+    category,
+  });
 
-    return response.json(transaction);
-  } catch (err) {
-    return response.status(400).json({ error: err.message });
-  }
+  return response.json(transaction);
 });
 
 transactionsRouter.delete('/:id', async (request, response) => {
@@ -61,7 +57,7 @@ transactionsRouter.delete('/:id', async (request, response) => {
 
 transactionsRouter.post(
   '/import',
-  upload.single('transactionsCSV'),
+  upload.single('file'),
   async (request, response) => {
     const importTransactions = new ImportTransactionsService();
 
