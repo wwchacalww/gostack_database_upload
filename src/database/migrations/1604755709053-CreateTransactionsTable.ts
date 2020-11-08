@@ -8,6 +8,7 @@ import {
 export default class CreateTransactionsTable1604755709053
   implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
     await queryRunner.createTable(
       new Table({
         name: 'transactions',
@@ -17,6 +18,7 @@ export default class CreateTransactionsTable1604755709053
             type: 'uuid',
             isPrimary: true,
             generationStrategy: 'uuid',
+            default: 'uuid_generate_v4()',
           },
           {
             name: 'title',
@@ -66,7 +68,7 @@ export default class CreateTransactionsTable1604755709053
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropForeignKey('TransactionCategory', 'transactions');
+    await queryRunner.dropForeignKey('transactions', 'TransactionCategory');
     await queryRunner.dropTable('transactions');
   }
 }

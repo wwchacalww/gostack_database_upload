@@ -1,6 +1,7 @@
-import { getRepository } from 'typeorm';
-// import AppError from '../errors/AppError';
+import { getRepository, getCustomRepository } from 'typeorm';
+import AppError from '../errors/AppError';
 
+import TransactionsRepository from '../repositories/TransactionsRepository';
 import Transaction from '../models/Transaction';
 import Category from '../models/Category';
 
@@ -17,6 +18,17 @@ class CreateTransactionService {
     value,
     category,
   }: Request): Promise<Transaction> {
+    const transactionRepository = getCustomRepository(TransactionsRepository);
+
+    const checkBalance: boolean = await transactionRepository.checkBalance(
+      type,
+      value,
+    );
+    console.log(checkBalance);
+    if (!checkBalance) {
+      throw new AppError("You shouldn't expense more than you receive!");
+    }
+
     let category_id: string;
     const categoryRepository = getRepository(Category);
 
@@ -34,8 +46,6 @@ class CreateTransactionService {
     } else {
       category_id = categoryInDB.id;
     }
-
-    const transactionRepository = getRepository(Transaction);
 
     const transaction = transactionRepository.create({
       title,
